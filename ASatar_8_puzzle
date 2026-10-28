@@ -1,0 +1,65 @@
+start = [1, 2, 0,
+         3, 4, 5,
+         6, 7, 8]
+
+goal = [0, 1, 2,
+        3, 4, 5,
+        6, 7, 8]
+
+
+def h(state):
+    count = 0
+    for i in range(9):
+        if state[i] != 0 and state[i] != goal[i]:
+            count += 1
+    return count
+
+
+def astar(start):
+    open_list = [(start, 0, [])]
+    visited = []
+
+    while open_list:
+        # Find the state with minimum f = g + h
+        best = 0
+        for i in range(1, len(open_list)):
+            if (open_list[i][1] + h(open_list[i][0]) <
+                open_list[best][1] + h(open_list[best][0])):
+                best = i
+
+        state, g, path = open_list.pop(best)
+
+        if state in visited:
+            continue
+        visited.append(state)
+
+        path = path + [state]
+
+        if state == goal:
+            for s in path:
+                print(s[0:3])
+                print(s[3:6])
+                print(s[6:9])
+                print()
+            print("Total moves:", len(path) - 1)
+            return
+
+        zero = state.index(0)
+        row, col = divmod(zero, 3)
+
+        for dr, dc in [(-1, 0), (1, 0),
+                       (0, -1), (0, 1)]:
+            r, c = row + dr, col + dc
+
+            if 0 <= r < 3 and 0 <= c < 3:
+                pos = r * 3 + c
+                new = state.copy()
+                new[zero], new[pos] = new[pos], new[zero]
+
+                if new not in visited:
+                    open_list.append((new, g + 1, path))
+
+    print("No solution found")
+
+
+astar(start)
