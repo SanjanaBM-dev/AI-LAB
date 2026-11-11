@@ -1,0 +1,70 @@
+
+import random
+
+# Calculate the number of attacking pairs
+def heuristic(board):
+    conflicts = 0
+
+    for i in range(4):
+        for j in range(i + 1, 4):
+
+            # Check diagonal attack
+            if abs(board[i] - board[j]) == abs(i - j):
+                conflicts += 1
+
+    return conflicts
+
+
+# Hill Climbing algorithm
+def hill_climbing():
+
+    # Randomly place 4 queens
+    # Each index represents a column
+    # Each value represents a row
+    board = [random.randint(0, 3) for _ in range(4)]
+
+    while True:
+
+        current_h = heuristic(board)
+
+        # If no conflicts, solution is found
+        if current_h == 0:
+            return board
+
+        best_board = board[:]
+        best_h = current_h
+
+        # Try moving each queen to another row
+        for col in range(4):
+            for row in range(4):
+
+                new_board = board[:]
+                new_board[col] = row
+
+                h = heuristic(new_board)
+
+                if h < best_h:
+                    best_h = h
+                    best_board = new_board
+
+        # If no better move is found, restart
+        if best_h >= current_h:
+            board = [random.randint(0, 3) for _ in range(4)]
+        else:
+            board = best_board
+
+
+# Run the algorithm
+solution = hill_climbing()
+
+print("Solution:", solution)
+print("Heuristic value:", heuristic(solution))
+
+# Display chessboard
+for row in range(4):
+    for col in range(4):
+        if solution[col] == row:
+            print("Q", end=" ")
+        else:
+            print(".", end=" ")
+    print()
