@@ -1,0 +1,33 @@
+
+import math
+import random
+
+def objective(x):
+    return -(x - 3) ** 2 + 10
+
+def simulated_annealing():
+    current = random.uniform(-10, 10)
+    temperature = 100
+    cooling_rate = 0.95
+
+    while temperature > 0.1:
+        new = current + random.uniform(-1, 1)
+
+        delta = objective(new) - objective(current)
+
+        if delta > 0:
+            current = new
+        else:
+            probability = math.exp(delta / temperature)
+
+            if random.random() < probability:
+                current = new
+
+        temperature *= cooling_rate
+
+    return current, objective(current)
+
+best_x, best_value = simulated_annealing()
+
+print("Best solution:", round(best_x, 2))
+print("Best value:", round(best_value, 2))
