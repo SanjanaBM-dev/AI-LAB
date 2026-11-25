@@ -1,0 +1,26 @@
+
+import re
+
+def eliminate_implication(expr):
+    expr = re.sub(r'(\w+)\s*->\s*(\w+)', r'(~\1 | \2)', expr)
+    return expr
+
+def move_negation(expr):
+    expr = expr.replace('~(~', '(')
+    expr = expr.replace('))', ')')
+    return expr
+
+def distribute_or(expr):
+    expr = expr.replace('&', ' & ')
+    expr = expr.replace('|', ' | ')
+    return expr
+
+def fol_to_cnf(expr):
+    expr = eliminate_implication(expr)
+    expr = move_negation(expr)
+    expr = distribute_or(expr)
+    return expr
+
+expression = input("Enter FOL expression: ")
+
+print("CNF:", fol_to_cnf(expression))
